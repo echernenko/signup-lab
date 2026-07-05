@@ -24,3 +24,9 @@ su - worker
 cd /home/{USER}/code/signup-lab
 docker compose up -d --build
 ```
+
+## Test
+```
+curl "localhost:8000/signup?country=ua"
+curl "localhost:8000/aggregation"
+```

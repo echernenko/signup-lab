@@ -1,16 +1,29 @@
 import json
 import os
 import threading
-from collections import defaultdict
-from threading import Lock
 
+import psycopg2
 import uvicorn
 from fastapi import FastAPI
 from confluent_kafka import Consumer
 
 app = FastAPI()
-aggregation: dict[str, int] = defaultdict(int)
-lock = Lock()
+DATABASE_URL = os.environ["DATABASE_URL"]
+
+
+def get_conn():
+    return psycopg2.connect(DATABASE_URL)
+
+
+def init_db():
+    with get_conn() as conn, conn.cursor() as cur:
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS signup_counts (
+                day DATE PRIMARY KEY,
+                count INT NOT NULL
+            )
+        """)
+        conn.commit()
 
 
 def consume():
@@ -21,22 +34,30 @@ def consume():
         "enable.auto.commit": False,
     })
     consumer.subscribe(["signups"])
+    conn = get_conn()
+    conn.autocommit = True
     while True:
         msg = consumer.poll(1.0)
         if msg is None or msg.error():
             continue
         event = json.loads(msg.value())
-        with lock:
-            aggregation[event["date"]] += 1
+        with conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO signup_counts (day, count) VALUES (%s, 1)
+                ON CONFLICT (day) DO UPDATE SET count = signup_counts.count + 1
+            """, (event["date"],))
         consumer.commit(msg)
 
 
 @app.get("/aggregation")
 def get_aggregation():
-    with lock:
-        return dict(aggregation)
+    with get_conn() as conn, conn.cursor() as cur:
+        cur.execute("SELECT day, count FROM signup_counts")
+        rows = cur.fetchall()
+    return {str(day): count for day, count in rows}
 
 
 if __name__ == "__main__":
+    init_db()
     threading.Thread(target=consume, daemon=True).start()
     uvicorn.run(app, host="0.0.0.0", port=8001)

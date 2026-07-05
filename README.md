@@ -38,6 +38,9 @@ docker compose ps
 
 # see logs
 docker compose logs api
+
+# top-like command
+docker stats
 ```
 4x containers should be running
 ```

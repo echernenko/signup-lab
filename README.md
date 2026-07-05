@@ -62,4 +62,4 @@ docker stats
   -  Where you run it from: your own laptop (or the same DigitalOcean droplet, but usually your laptop since it's creating/destroying infrastructure, not running inside it). You need the terraform CLI installed locally and a DigitalOcean API token.
  
 ## Next steps
-Play with k3s. It is lightweight, certified Kubernetes distribution made by Rancher — same API, same kubectl commands, but stripped down: single binary, smaller memory footprint (~512MB vs 1GB+ for a full control plane), no separate etcd required by default (uses SQLite instead), and drops some rarely-used components.
+Play with `k3s`. It is lightweight, certified Kubernetes distribution made by Rancher — same API, same kubectl commands, but stripped down: single binary, smaller memory footprint (~512MB vs 1GB+ for a full control plane), no separate etcd required by default (uses SQLite instead), and drops some rarely-used components.

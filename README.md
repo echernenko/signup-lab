@@ -1,9 +1,11 @@
+## Pre-work
 NOTE: suggest to not push anything for a sandbox Ubuntu box to this repo. Either edit via browser or push from main laptop. 
 Be sure you have keys set up for github and remote is set:
 ```
 git remote set-url origin git@github.com:echernenko/signup-lab.git
 ```
 
+## Actual Setup
 1. Create a new DigitalOcean Droplet: https://cloud.digitalocean.com/droplets
 2. Login to droplet and create a new user to not work under root:
 ```

@@ -30,3 +30,12 @@ docker compose up -d --build
 curl "localhost:8000/signup?country=ua"
 curl "localhost:8000/aggregation"
 ```
+
+## Debugging
+```
+# see the process running
+docker compose ps
+
+# see logs
+docker compose logs api
+```

@@ -39,3 +39,15 @@ docker compose ps
 # see logs
 docker compose logs api
 ```
+4x containers should be running
+```
+ ✔ Image postgres:16               Pulled                                                                                      9.4s
+ ✔ Image signup-lab-worker         Built                                                                                      14.8s
+ ✔ Image signup-lab-api            Built                                                                                      14.8s
+ ✔ Network signup-lab_default      Created                                                                                     0.1s
+ ✔ Volume signup-lab_pgdata        Created                                                                                     0.0s
+ ✔ Container signup-lab-kafka-1    Started                                                                                     1.2s
+ ✔ Container signup-lab-postgres-1 Started                                                                                     1.1s
+ ✔ Container signup-lab-worker-1   Started                                                                                     2.8s
+ ✔ Container signup-lab-api-1      Started
+```

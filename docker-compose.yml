@@ -1,0 +1,6 @@
+services:
+  api:
+    build: ./api
+    env_file: .env
+    ports:
+      - "${API_PORT}:8000"

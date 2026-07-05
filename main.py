@@ -6,7 +6,6 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
-# In-memory store: {date_str: count}. This is step 1 only — no Kafka, no DB yet.
 aggregation: dict[str, int] = defaultdict(int)
 lock = Lock()
 

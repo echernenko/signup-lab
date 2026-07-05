@@ -24,4 +24,3 @@ su - worker
 cd /home/{USER}/code/signup-lab
 docker compose up -d --build
 ```
-5. xx

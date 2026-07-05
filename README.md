@@ -11,5 +11,8 @@ su - {USER}
 ```
 git clone git@github.com:echernenko/signup-lab.git
 chmod +x bootstrap.sh && ./bootstrap.sh
+exit
+su - worker
+cd /home/{USER}/code/signup-lab
 docker compose up -d --build
 ```

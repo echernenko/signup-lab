@@ -1,6 +1,7 @@
 import json
 import os
 import threading
+import time
 
 import psycopg2
 import uvicorn
@@ -16,14 +17,20 @@ def get_conn():
 
 
 def init_db():
-    with get_conn() as conn, conn.cursor() as cur:
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS signup_counts (
-                day DATE PRIMARY KEY,
-                count INT NOT NULL
-            )
-        """)
-        conn.commit()
+    for attempt in range(10):
+        try:
+            with get_conn() as conn, conn.cursor() as cur:
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS signup_counts (
+                        day DATE PRIMARY KEY,
+                        count INT NOT NULL
+                    )
+                """)
+                conn.commit()
+            return
+        except psycopg2.OperationalError:
+            time.sleep(2)
+    raise RuntimeError("Postgres never became available")
 
 
 def consume():

@@ -1,24 +1,18 @@
-from collections import defaultdict
+import json
+import os
 from datetime import date
-from threading import Lock
 
 from fastapi import FastAPI
+from confluent_kafka import Producer
 
 app = FastAPI()
-
-aggregation: dict[str, int] = defaultdict(int)
-lock = Lock()
+producer = Producer({"bootstrap.servers": os.environ["KAFKA_BOOTSTRAP_SERVERS"]})
 
 
 @app.get("/signup")
 def signup(country: str):
     today = date.today().isoformat()
-    with lock:
-        aggregation[today] += 1
-    return {"status": "ok", "country": country, "date": today}
-
-
-@app.get("/aggregation")
-def get_aggregation():
-    with lock:
-        return dict(aggregation)
+    event = {"country": country, "date": today}
+    producer.produce("signups", key=country, value=json.dumps(event))
+    producer.flush()
+    return {"status": "queued", "country": country, "date": today}
